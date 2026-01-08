@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Paradigm Shift</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#222222',
+                        secondary: '#888888',
+                        accent: '#000000',
+                        light: '#f5f5f5',
+                        dark: '#111111'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Helvetica', 'Arial', 'sans-serif'],
+                        mono: ['Consolas', 'Monaco', 'monospace']
+                    },
+                    spacing: {
+                        '128': '32rem',
+                        '144': '36rem',
+                    },
+                    zIndex: {
+                        '60': '60',
+                        '70': '70',
+                        '80': '80',
+                        '90': '90',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Prevent overflow on mobile devices */
+        html, body {
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Dynamic gradient background for header */
+        .dynamic-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -1;
+        }
+        
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Add text shadow for better readability on dynamic background */
+        #home h1, #home p {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        /* Custom styles for Paradigm Shift */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', Helvetica, Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #222222;
+            overflow-x: hidden;
+        }
+        
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto 1fr auto;
+            grid-template-areas: 
+                "header"
+                "main"
+                "footer";
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Main content area */
+        main {
+            grid-area: main;
+            position: relative;
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background-color: #ffffff;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 100;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+        
+        /* Ensure sidebar is always on top in mobile view */
+        @media (max-width: 767px) {
+            .sidebar {
+                z-index: 100;
+            }
+            
+            .overlay {
+                z-index: 90;
+            }
+        }
+        
+        .sidebar.active {
+            transform: translateX(0);
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 90;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .grid-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-gap: 2rem;
+            align-items: start;
+        }
+        
+        /* Ensure all grid items have the same height */
+        .grid-gallery-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .grid-gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .grid-gallery-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .grid-gallery-item-image {
+            position: relative;
+            overflow: hidden;
+            padding-top: 75%; /* 4:3 Aspect Ratio */
+            cursor: pointer;
+        }
+        
+        .grid-gallery-item-image img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            z-index: 1;
+            filter: grayscale(100%);
+        }
+        
+        .grid-gallery-item:hover .grid-gallery-item-image img {
+            filter: grayscale(0%);
+        }
+        
+        /* Skeleton loading effect */
+        .skeleton {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            z-index: 0;
+        }
+        
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+        
+        .image-loaded .skeleton {
+            display: none;
+        }
+        
+        .grid-gallery-item:hover .grid-gallery-item-image img {
+            transform: scale(1.05);
+        }
+        
+        .grid-gallery-item-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+            background-color: white;
+        }
+        
+        .grid-gallery-item-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .grid-gallery-item-description {
+            color: #666;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+            min-height: 60px; /* Ensure consistent height for descriptions */
+        }
+        
+        .grid-gallery-item-link {
+            display: inline-block;
+            margin-top: auto;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 200;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+        
+        .modal-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: #ffffff;
+            font-size: 30px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            color: #cccccc;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #000000;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .btn {
+            position: relative;
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #000000;
+            color: #ffffff;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background-color: #333333;
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            left: 0;
+        }
+        
+        .btn:hover {
+            color: #ffffff;
+        }
+        
+        .section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            .grid-container {
+                grid-template-columns: 280px 1fr;
+                grid-template-areas: 
+                    "sidebar header"
+                    "sidebar main"
+                    "sidebar footer";
+            }
+            
+            .sidebar {
+                transform: translateX(0);
+                box-shadow: none;
+                z-index: 50;
+            }
+            
+            .menu-toggle {
+                display: none;
+            }
+            
+            /* Adjust gallery for tablet and desktop */
+            .grid-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                grid-gap: 2.5rem;
+            }
+            
+            /* Ensure content doesn't overlap with sidebar */
+            header, main > section, footer {
+                margin-left: 0; /* Reset margin */
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+        
+        /* Additional responsive breakpoints */
+        @media (min-width: 1024px) {
+            .grid-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            }
+            
+            /* More space for larger screens */
+            header, main, footer {
+                padding-left: 3rem;
+                padding-right: 3rem;
+            }
+        }
+        
+        @media (min-width: 1280px) {
+            .grid-gallery {
+                grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            }
+        }
+        
+        @media (max-width: 767px) {
+            .desktop-nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="grid-container">
+    <!-- Overlay for mobile menu -->
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar p-6 flex flex-col justify-between" id="sidebar">
+        <div>
+            <div class="flex items-center justify-between mb-12">
+                <h1 class="text-2xl font-bold">Paradigm Shift</h1>
+                <button class="menu-toggle md:hidden text-2xl" id="closeSidebar">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            
+            <nav class="space-y-6">
+                <a href="#home" class="nav-link block text-lg font-medium">Home</a>
+                <a href="#work" class="nav-link block text-lg font-medium">Work</a>
+                <a href="#about" class="nav-link block text-lg font-medium">About</a>
+                <a href="#contact" class="nav-link block text-lg font-medium">Contact</a>
+            </nav>
+        </div>
+        
+        <div class="mt-auto pt-12">
+            <div class="flex space-x-4">
+                <a href="#" class="text-gray-600 hover:text-black transition-colors">
+                    <i class="fa fa-twitter"></i>
+                </a>
+                <a href="#" class="text-gray-600 hover:text-black transition-colors">
+                    <i class="fa fa-instagram"></i>
+                </a>
+                <a href="#" class="text-gray-600 hover:text-black transition-colors">
+                    <i class="fa fa-dribbble"></i>
+                </a>
+                <a href="#" class="text-gray-600 hover:text-black transition-colors">
+                    <i class="fa fa-github"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Header -->
+        <header class="grid-area: header bg-white shadow-sm sticky top-0 z-30">
+            <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+                <button class="menu-toggle md:hidden text-2xl" id="openSidebar">
+                    <i class="fa fa-bars"></i>
+                </button>
+                
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#home" class="nav-link text-gray-700 hover:text-black transition-colors">Home</a>
+                    <a href="#work" class="nav-link text-gray-700 hover:text-black transition-colors">Work</a>
+                    <a href="#about" class="nav-link text-gray-700 hover:text-black transition-colors">About</a>
+                    <a href="#contact" class="nav-link text-gray-700 hover:text-black transition-colors">Contact</a>
+                </nav>
+                
+                <a href="#contact" class="btn hidden md:inline-block" id="headerButton">Get in Touch</a>
+            </div>
+        </header>
+        
+        <!-- Hero Section -->
+        <section id="home" class="h-screen flex items-center justify-center relative overflow-hidden">
+            <div class="dynamic-bg"></div>
+            <div class="container mx-auto px-6">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6" style="color: rgb(250, 250, 250);">Magna sed nullam nisl adipiscing</h1>
+                    <p class="text-xl text-gray-600 mb-12" style="color: rgb(245, 246, 252);">
+                        Lorem ipsum dolor sit amet consectetur adipiscing elit. Duis dapibus rutrum facilisis. 
+                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+                    </p>
+                    <a href="#work" class="btn">View My Work</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Work Section -->
+        <section id="work" class="py-24 bg-white section">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">Feugiat consequat tempus ultrices</h2>
+                
+                <div class="grid-gallery">
+                    <!-- Gallery items will be dynamically generated -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section id="about" class="py-24 bg-light section">
+            <div class="container mx-auto px-6">
+                <div class="max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">Ultrices erat magna sed condimentum</h2>
+                    
+                    <div class="space-y-8">
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-4">Erat aliquam</h3>
+                            <p class="text-gray-700">
+                                Vehicula ultrices dolor amet ultricies et condimentum. Magna sed etiam consequat, 
+                                et lorem adipiscing sed dolor sit amet, consectetur amet do eiusmod tempor incididunt 
+                                ipsum suspendisse ultrices gravida.
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-4">Nisl consequat</h3>
+                            <p class="text-gray-700">
+                                Aenean ornare velit lacus, ac varius enim ullamcorper eu. Proin aliquam sed facilisis 
+                                ante interdum congue. Integer mollis, nisl amet convallis, porttitor magna ullamcorper, 
+                                amet mauris. Ut magna finibus nisi nec lacinia ipsum maximus.
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-2xl font-semibold mb-4">Lorem gravida</h3>
+                            <p class="text-gray-700">
+                                Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aenean 
+                                ornare velit lacus, ac varius sed enim lorem ullamcorper dolore. ac varius enim 
+                                lorem ullamcorper dolore. Proin aliquam facilisis.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="py-24 bg-white section">
+            <div class="container mx-auto px-6">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Duis sed adpiscing veroeros amet</h2>
+                    <p class="text-xl text-gray-600 mb-12">
+                        Proin tempus feugiat sed varius enim lorem ullamcorper dolore aliquam aenean ornare 
+                        velit lacus, ac varius enim lorem ullamcorper dolore.
+                    </p>
+                    
+                    <form class="space-y-6 max-w-xl mx-auto">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1 text-left">Name</label>
+                                <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1 text-left">Email</label>
+                                <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1 text-left">Subject</label>
+                            <input type="text" id="subject" name="subject" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
+                        </div>
+                        
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1 text-left">Message</label>
+                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn w-full">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="grid-area: footer py-12 bg-gray-900 text-white">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-6 md:mb-0">
+                        <h3 class="text-xl font-bold">Paradigm Shift</h3>
+                        <p class="text-gray-400 mt-2">© 2025 All rights reserved.</p>
+                    </div>
+                    
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-weixin"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-play-circle"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-coffee"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+    
+    <!-- Modal for image preview -->
+    <div class="modal" id="imageModal">
+        <span class="modal-close" id="closeModal">×</span>
+        <div class="modal-content">
+            <img id="modalImage" src="" alt="Preview">
+        </div>
+    </div>
+    
+
+    <script>
+        // Sample gallery data
+        const galleryItems = [
+            { 
+                id: 1, 
+                title: 'Project 1', 
+                description: 'A minimalist portfolio design with clean typography and geometric shapes.',
+                image: 'images/project1.jpg',
+                link: '#'
+            },
+            { 
+                id: 2, 
+                title: 'Project 2', 
+                description: 'Modern website with CSS Grid layout showcasing creative projects.',
+                image: 'images/project2.jpg',
+                link: '#'
+            },
+            { 
+                id: 3, 
+                title: 'Project 3', 
+                description: 'Responsive design with monochromatic color scheme and elegant typography.',
+                image: 'images/project3.jpg',
+                link: '#'
+            },
+            { 
+                id: 4, 
+                title: 'Project 4', 
+                description: 'Creative portfolio template with interactive elements and smooth animations.',
+                image: 'images/project4.jpg',
+                link: '#'
+            },
+            { 
+                id: 5, 
+                title: 'Project 5', 
+                description: 'Minimalist web design with focus on content and user experience.',
+                image: 'images/project5.jpg',
+                link: '#'
+            },
+            { 
+                id: 6, 
+                title: 'Project 6', 
+                description: 'Innovative layout with grid-based design and subtle hover effects.',
+                image: 'images/project6.jpg',
+                link: '#'
+            }
+        ];
+        
+        // DOM Elements
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const openSidebarBtn = document.getElementById('openSidebar');
+        const closeSidebarBtn = document.getElementById('closeSidebar');
+        const galleryContainer = document.querySelector('.grid-gallery');
+        const imageModal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const closeModalBtn = document.getElementById('closeModal');
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contactForm = document.querySelector('form');
+        
+        // Initialize the gallery
+        function initGallery() {
+            galleryItems.forEach(item => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'grid-gallery-item';
+                
+                // Create image container with skeleton
+                const imageContainer = document.createElement('div');
+                imageContainer.className = 'grid-gallery-item-image';
+                imageContainer.innerHTML = `
+                    <div class="skeleton"></div>
+                    <img src="${item.image}" alt="${item.title}" loading="lazy">
+                `;
+                
+                // Add image load event to remove skeleton
+                const img = imageContainer.querySelector('img');
+                img.addEventListener('load', () => {
+                    imageContainer.classList.add('image-loaded');
+                });
+                
+                // Handle image load error
+                img.addEventListener('error', () => {
+                    imageContainer.classList.add('image-loaded');
+                    img.style.filter = 'grayscale(100%)';
+                });
+                
+                // Create content container
+                const contentContainer = document.createElement('div');
+                contentContainer.className = 'grid-gallery-item-content';
+                contentContainer.innerHTML = `
+                    <h3 class="grid-gallery-item-title">${item.title}</h3>
+                    <p class="grid-gallery-item-description">${item.description}</p>
+                    <a href="${item.link}" class="btn grid-gallery-item-link">Learn More</a>
+                `;
+                
+                // Assemble the gallery item
+                galleryItem.appendChild(imageContainer);
+                galleryItem.appendChild(contentContainer);
+                
+                // Add click event for image modal
+                imageContainer.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent triggering the link
+                    openModal(item.image);
+                });
+                
+                // Ensure proper z-index stacking
+                const btnLink = contentContainer.querySelector('.btn');
+                btnLink.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent triggering the image click
+                });
+                
+                galleryContainer.appendChild(galleryItem);
+            });
+        }
+        
+        // Initialize sidebar functionality
+        function initSidebar() {
+            openSidebarBtn.addEventListener('click', () => {
+                sidebar.classList.add('active');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
+            
+            closeSidebarBtn.addEventListener('click', closeSidebar);
+            overlay.addEventListener('click', closeSidebar);
+            
+            function closeSidebar() {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Initialize modal functionality
+        function initModal() {
+            closeModalBtn.addEventListener('click', closeModal);
+            imageModal.addEventListener('click', (e) => {
+                if (e.target === imageModal) {
+                    closeModal();
+                }
+            });
+            
+            function openModal(imageSrc) {
+                modalImage.src = imageSrc;
+                imageModal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            function closeModal() {
+                imageModal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        }
+        
+        // Initialize scroll animations
+        function initScrollAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        }
+        
+        // Initialize smooth scrolling for navigation links
+        function initSmoothScroll() {
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                        
+                        // Close sidebar if open (mobile)
+                        if (window.innerWidth < 768) {
+                            sidebar.classList.remove('active');
+                            overlay.classList.remove('active');
+                            document.body.style.overflow = '';
+                        }
+                    }
+                });
+            });
+        }
+        
+        // Initialize form submission
+        function initFormSubmission() {
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Get form data
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const subject = document.getElementById('subject').value;
+                const message = document.getElementById('message').value;
+                
+                // Validate form
+                if (!name || !email || !subject || !message) {
+                    alert('Please fill in all fields');
+                    return;
+                }
+                
+                // Simulate form submission
+                alert(`Thank you for your message, ${name}! We'll get back to you soon.`);
+                contactForm.reset();
+            });
+        }
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initGallery();
+            initSidebar();
+            initModal();
+            initScrollAnimations();
+            initSmoothScroll();
+            initFormSubmission();
+            
+            // Add animation to hero section
+            gsap.from('#home h1', { opacity: 0, y: 50, duration: 1, delay: 0.2 });
+            gsap.from('#home p', { opacity: 0, y: 30, duration: 1, delay: 0.4 });
+            gsap.from('#home .btn', { opacity: 0, y: 20, duration: 1, delay: 0.6 });
+        });
+    </script>
+
+</body></html>
