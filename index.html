@@ -1,28 +1,147 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>范式转换</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <!-- GSAP for animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-
-    <!-- Tailwind config moved to CSS for better compatibility -->
-
     <style>
-        /* Prevent overflow on mobile devices */
-        html, body {
-            overflow-x: hidden;
-            width: 100%;
+        /* 基础样式 */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
-        
-        /* Dynamic gradient background for header */
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #222;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 侧边栏 */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: white;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            padding: 2rem;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar.active {
+            transform: translateX(0);
+        }
+
+        .sidebar-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            display: block;
+            text-decoration: none;
+            color: #000;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-nav a {
+            color: #666;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            color: #000;
+        }
+
+        .sidebar-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #000;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar-nav a:hover::after, .sidebar-nav a.active::after {
+            width: 100%;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 2rem;
+            left: 2rem;
+            right: 2rem;
+        }
+
+        .sidebar-social {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-social a {
+            color: #666;
+            text-decoration: none;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            transition: transform 0.3s ease;
+            min-height: 100vh;
+        }
+
+        .sidebar.active + .main-content {
+            transform: translateX(280px);
+        }
+
+        /* 头部 */
+        .header {
+            padding: 1rem;
+            background: transparent;
+            position: relative;
+            z-index: 100;
+        }
+
+        .menu-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* 首页 */
+        .home {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            color: white;
+            position: relative;
+        }
+
         .dynamic-bg {
             position: absolute;
             top: 0;
@@ -34,369 +153,50 @@
             animation: gradientBG 15s ease infinite;
             z-index: -1;
         }
-        
+
         @keyframes gradientBG {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-        
-        /* Add text shadow for better readability on dynamic background */
-        #home h1, #home p {
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        /* Custom styles for Paradigm Shift */
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        body {
-            font-family: 'Inter', Helvetica, Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #222222;
-            overflow-x: hidden;
-        }
-        
-        .grid-container {
-            display: grid;
-            grid-template-columns: 1fr;
-            grid-template-rows: auto 1fr auto;
-            grid-template-areas: 
-                "header"
-                "main"
-                "footer";
-            min-height: 100vh;
-            position: relative;
-        }
-        
-        /* Main content area */
-        main {
-            grid-area: main;
-            position: relative;
-        }
-        
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 280px;
-            height: 100vh;
-            background-color: #ffffff;
-            -webkit-transform: translateX(-100%);
-            -moz-transform: translateX(-100%);
-            -ms-transform: translateX(-100%);
-            -o-transform: translateX(-100%);
-            transform: translateX(-100%);
-            -webkit-transition: transform 0.3s ease-in-out;
-            -moz-transition: transform 0.3s ease-in-out;
-            -ms-transition: transform 0.3s ease-in-out;
-            -o-transition: transform 0.3s ease-in-out;
-            transition: transform 0.3s ease-in-out;
-            z-index: 100;
-            -webkit-box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            -moz-box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-        }
-        
-        /* Ensure sidebar is always on top in mobile view */
-        @media (max-width: 767px) {
-            .sidebar {
-                z-index: 100;
-            }
-            
-            .overlay {
-                z-index: 90;
-            }
-        }
-        
-        .sidebar.active {
-            -webkit-transform: translateX(0);
-            -moz-transform: translateX(0);
-            -ms-transform: translateX(0);
-            -o-transform: translateX(0);
-            transform: translateX(0);
-        }
-        
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.5);
-            filter: alpha(opacity=0);
-            opacity: 0;
-            visibility: hidden;
-            -webkit-transition: opacity 0.3s ease, visibility 0.3s ease;
-            -moz-transition: opacity 0.3s ease, visibility 0.3s ease;
-            -ms-transition: opacity 0.3s ease, visibility 0.3s ease;
-            -o-transition: opacity 0.3s ease, visibility 0.3s ease;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            z-index: 90;
-        }
-        
-        .overlay.active {
-            filter: alpha(opacity=100);
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .grid-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            grid-gap: 2rem;
-            align-items: start;
-        }
-        
-        /* Ensure all grid items have the same height */
-        .grid-gallery-item {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .grid-gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 4px;
-            transition: transform 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            background-color: white;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            height: 100%;
-            z-index: 1;
-        }
-        
-        .grid-gallery-item:hover {
-            -webkit-transform: translateY(-5px);
-            -moz-transform: translateY(-5px);
-            -ms-transform: translateY(-5px);
-            -o-transform: translateY(-5px);
-            transform: translateY(-5px);
-        }
-        
-        .grid-gallery-item-image {
-            position: relative;
-            overflow: hidden;
-            padding-top: 75%; /* 4:3 Aspect Ratio */
-            cursor: pointer;
-        }
-        
-        .grid-gallery-item-image img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            -webkit-transition: transform 0.5s ease, filter 0.5s ease;
-            -moz-transition: transform 0.5s ease, filter 0.5s ease;
-            -ms-transition: transform 0.5s ease, filter 0.5s ease;
-            -o-transition: transform 0.5s ease, filter 0.5s ease;
-            transition: transform 0.5s ease, filter 0.5s ease;
-            z-index: 1;
-            -webkit-filter: grayscale(100%);
-            -moz-filter: grayscale(100%);
-            -ms-filter: grayscale(100%);
-            filter: grayscale(100%);
-        }
-        
-        .grid-gallery-item:hover .grid-gallery-item-image img {
-            -webkit-filter: grayscale(0%);
-            -moz-filter: grayscale(0%);
-            -ms-filter: grayscale(0%);
-            filter: grayscale(0%);
-        }
-        
-        /* Skeleton loading effect */
-        .skeleton {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #f0f0f0; /* Fallback color */
-            background: -webkit-linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background: -moz-linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background: -o-linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 200% 100%;
-            -webkit-animation: skeleton-loading 1.5s infinite;
-            -moz-animation: skeleton-loading 1.5s infinite;
-            -o-animation: skeleton-loading 1.5s infinite;
-            animation: skeleton-loading 1.5s infinite;
-            z-index: 0;
-        }
-        
-        @-webkit-keyframes skeleton-loading {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        @-moz-keyframes skeleton-loading {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        @-o-keyframes skeleton-loading {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        @keyframes skeleton-loading {
-            0% {
-                background-position: 200% 0;
-            }
-            100% {
-                background-position: -200% 0;
-            }
-        }
-        
-        .image-loaded .skeleton {
-            display: none;
-        }
-        
-        .grid-gallery-item:hover .grid-gallery-item-image img {
-            -webkit-transform: scale(1.05);
-            -moz-transform: scale(1.05);
-            -ms-transform: scale(1.05);
-            -o-transform: scale(1.05);
-            transform: scale(1.05);
-        }
-        
-        .grid-gallery-item-content {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            z-index: 2;
-            background-color: white;
-        }
-        
-        .grid-gallery-item-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-        
-        .grid-gallery-item-description {
-            color: #666;
+        .home h1 {
+            font-size: 3rem;
             margin-bottom: 1rem;
-            flex-grow: 1;
-            min-height: 60px; /* Ensure consistent height for descriptions */
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        
-        .grid-gallery-item-link {
-            display: inline-block;
-            margin-top: auto;
-            position: relative;
-            z-index: 3;
+
+        .home p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            z-index: 200;
-        }
-        
-        .modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        
-        .modal-content {
-            max-width: 90%;
-            max-height: 90%;
-        }
-        
-        .modal-content img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-        
-        .modal-close {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: #ffffff;
-            font-size: 30px;
-            cursor: pointer;
-            transition: color 0.3s ease;
-        }
-        
-        .modal-close:hover {
-            color: #cccccc;
-        }
-        
-        .nav-link {
-            position: relative;
-            transition: color 0.3s ease;
-        }
-        
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: #000000;
-            -webkit-transition: width 0.3s ease;
-            -moz-transition: width 0.3s ease;
-            -ms-transition: width 0.3s ease;
-            -o-transition: width 0.3s ease;
-            transition: width 0.3s ease;
-        }
-        
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        
+
+        /* 按钮 */
         .btn {
-            position: relative;
             display: inline-block;
             padding: 12px 24px;
-            background-color: #000000;
-            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
             text-decoration: none;
-            border: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 50px;
+            position: relative;
             overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+
         .btn::before {
             content: '';
             position: absolute;
@@ -404,536 +204,575 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background-color: #333333;
-            -webkit-transition: left 0.3s ease;
-            -moz-transition: left 0.3s ease;
-            -ms-transition: left 0.3s ease;
-            -o-transition: left 0.3s ease;
-            transition: left 0.3s ease;
-            z-index: -1;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: all 0.6s ease;
         }
-        
+
         .btn:hover::before {
+            left: 100%;
+        }
+
+        /* 项目部分 */
+        .projects {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* 项目网格 */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .project-item {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .project-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .project-image {
+            position: relative;
+            padding-top: 75%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .project-image img {
+            position: absolute;
+            top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease, filter 0.5s ease;
+            filter: grayscale(100%);
         }
-        
-        .btn:hover {
-            color: #ffffff;
+
+        .project-item:hover .project-image img {
+            filter: grayscale(0%);
+            transform: scale(1.05);
         }
-        
-        .section {
-            filter: alpha(opacity=0);
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .project-description {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .project-link {
+            display: inline-block;
+            color: #000;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .project-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 关于部分 */
+        .about {
+            padding: 4rem 2rem;
+            background: #f9f9f9;
+            text-align: center;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .about p {
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        /* 联系部分 */
+        .contact {
+            padding: 4rem 2rem;
+            background: white;
+        }
+
+        .contact-content {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .form-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #000;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        /* 页脚 */
+        .footer {
+            padding: 2rem;
+            background: #000;
+            color: white;
+            text-align: center;
+        }
+
+        /* 遮罩层 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
             opacity: 0;
-            -webkit-transform: translateY(20px);
-            -moz-transform: translateY(20px);
-            -ms-transform: translateY(20px);
-            -o-transform: translateY(20px);
-            transform: translateY(20px);
-            -webkit-transition: opacity 0.6s ease, transform 0.6s ease;
-            -moz-transition: opacity 0.6s ease, transform 0.6s ease;
-            -ms-transition: opacity 0.6s ease, transform 0.6s ease;
-            -o-transition: opacity 0.6s ease, transform 0.6s ease;
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 999;
         }
-        
-        .section.visible {
-            filter: alpha(opacity=100);
+
+        .overlay.active {
             opacity: 1;
-            -webkit-transform: translateY(0);
-            -moz-transform: translateY(0);
-            -ms-transform: translateY(0);
-            -o-transform: translateY(0);
-            transform: translateY(0);
+            visibility: visible;
         }
-        
-        /* Responsive adjustments */
+
+        /* 模态框 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 2000;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* 响应式设计 */
         @media (min-width: 768px) {
-            .grid-container {
-                grid-template-columns: 280px 1fr;
-                grid-template-areas: 
-                    "sidebar header"
-                    "sidebar main"
-                    "sidebar footer";
-            }
-            
             .sidebar {
                 transform: translateX(0);
                 box-shadow: none;
-                z-index: 50;
+            }
+            
+            .main-content {
+                margin-left: 280px;
+            }
+            
+            .sidebar.active + .main-content {
+                transform: translateX(0);
             }
             
             .menu-toggle {
                 display: none;
             }
             
-            /* Adjust gallery for tablet and desktop */
-            .grid-gallery {
+            .project-grid {
                 grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-                grid-gap: 2.5rem;
-            }
-            
-            /* Ensure content doesn't overlap with sidebar */
-            header, main > section, footer {
-                margin-left: 0; /* Reset margin */
-                padding-left: 1rem;
-                padding-right: 1rem;
+                gap: 2.5rem;
             }
         }
-        
-        /* Additional responsive breakpoints */
-        @media (min-width: 1024px) {
-            .grid-gallery {
-                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            }
-            
-            /* More space for larger screens */
-            header, main, footer {
-                padding-left: 3rem;
-                padding-right: 3rem;
-            }
-        }
-        
-        @media (min-width: 1280px) {
-            .grid-gallery {
-                grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-            }
-        }
-        
+
         @media (max-width: 767px) {
-            .desktop-nav {
-                display: none;
+            .sidebar {
+                width: 80%;
+                max-width: 280px;
+            }
+            
+            .home h1 {
+                font-size: 2.5rem;
+            }
+            
+            .home p {
+                font-size: 1.1rem;
+            }
+            
+            .section-header h2,
+            .about h2,
+            .contact h2 {
+                font-size: 2rem;
+            }
+            
+            .projects,
+            .about,
+            .contact {
+                padding: 2rem 1rem;
             }
         }
     </style>
 </head>
-<body class="antialiased">
-    <div class="grid-container">
-    <!-- Overlay for mobile menu -->
-    <div class="overlay" id="overlay"></div>
-    
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar p-6 flex flex-col justify-between" id="sidebar">
-        <div>
-            <div class="flex items-center justify-between mb-12">
-                <h1 class="text-2xl font-bold">范式转换</h1>
-                <button class="menu-toggle md:hidden text-2xl" id="closeSidebar">
-                    <i class="fa fa-times"></i>
-                </button>
-            </div>
-            
-            <nav class="space-y-6">
-                <a href="#home" class="nav-link block text-lg font-medium">首页</a>
-                <a href="#work" class="nav-link block text-lg font-medium">作品</a>
-                <a href="#about" class="nav-link block text-lg font-medium">关于</a>
-                <a href="#contact" class="nav-link block text-lg font-medium">联系</a>
-            </nav>
-        </div>
-        
-        <div class="mt-auto pt-12">
-            <div class="flex space-x-4">
-                <a href="#" class="text-gray-600 hover:text-black transition-colors">
-                    <i class="fa fa-weixin"></i>
-                </a>
-                <a href="#" class="text-gray-600 hover:text-black transition-colors">
-                    <i class="fa fa-play-circle"></i>
-                </a>
-                <a href="#" class="text-gray-600 hover:text-black transition-colors">
-                    <i class="fa fa-coffee"></i>
-                </a>
-                <a href="#" class="text-gray-600 hover:text-black transition-colors">
-                    <i class="fa fa-github"></i>
-                </a>
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+        <a href="#home" class="sidebar-logo">范式转换</a>
+        <ul class="sidebar-nav">
+            <li><a href="#home" class="nav-link active">首页</a></li>
+            <li><a href="#projects" class="nav-link">项目</a></li>
+            <li><a href="#about" class="nav-link">关于</a></li>
+            <li><a href="#contact" class="nav-link">联系</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <p>&copy; 2024 范式转换. 保留所有权利.</p>
+            <div class="sidebar-social">
+                <a href="#" title="微信"><i class="fa fa-weixin"></i></a>
+                <a href="#" title="哔哩哔哩"><i class="fa fa-play-circle"></i></a>
+                <a href="#" title="咖啡"><i class="fa fa-coffee"></i></a>
+                <a href="#" title="GitHub"><i class="fa fa-github"></i></a>
             </div>
         </div>
     </aside>
-    
-    <!-- Main Content -->
-    <main>
-        <!-- Header -->
-        <header class="grid-area: header bg-white shadow-sm sticky top-0 z-30">
-            <div class="container mx-auto px-6 py-4 flex items-center justify-between">
-                <button class="menu-toggle md:hidden text-2xl" id="openSidebar">
-                    <i class="fa fa-bars"></i>
-                </button>
-                
-                <nav class="hidden md:flex space-x-8">
-                    <!-- Desktop navigation links removed as per request -->
-                </nav>
-                
-                <a href="#contact" class="btn hidden md:inline-block" id="headerButton">Get in Touch</a>
-            </div>
+
+    <!-- 主内容 -->
+    <div class="main-content">
+        <!-- 头部 -->
+        <header class="header">
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fa fa-bars"></i>
+            </button>
         </header>
-        
-        <!-- Hero Section -->
-        <section id="home" class="h-screen flex items-center justify-center relative overflow-hidden">
+
+        <!-- 首页 -->
+        <section id="home" class="home">
             <div class="dynamic-bg"></div>
-            <div class="container mx-auto px-6">
-                <div class="max-w-3xl mx-auto text-center">
-                    <h1 class="text-4xl md:text-6xl font-bold mb-6" style="color: rgb(250, 250, 250);">探索无限可能</h1>
-                    <p class="text-xl text-gray-600 mb-12" style="color: rgb(245, 246, 252);">
-                        欢迎来到我的创意世界，这里展示了我对设计和技术的热爱与探索。
-                        每一个项目都是一次独特的旅程，融合了创新思维与精湛工艺。
-                    </p>
-                    <a href="#work" class="btn">查看作品</a>
-                </div>
-            </div>
+            <h1>范式转换</h1>
+            <p>突破传统思维的界限，探索设计与技术的新可能。我们致力于创造具有影响力的数字体验。</p>
+            <a href="#projects" class="btn">查看我们的作品 <i class="fa fa-arrow-right"></i></a>
         </section>
-        
-        <!-- Work Section -->
-        <section id="work" class="py-24 bg-white section">
-            <div class="container mx-auto px-6">
-                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">创意作品展示</h2>
-                
-                <div class="grid-gallery">
-                    <!-- Gallery items will be dynamically generated -->
-                </div>
+
+        <!-- 项目 -->
+        <section id="projects" class="projects">
+            <div class="section-header">
+                <h2>精选项目</h2>
+                <p>探索我们的创意作品，每一个项目都代表着独特的视角和解决方案。</p>
             </div>
-        </section>
-        
-        <!-- About Section -->
-        <section id="about" class="py-24 bg-light section">
-            <div class="container mx-auto px-6">
-                <div class="max-w-3xl mx-auto">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">Ultrices erat magna sed condimentum</h2>
-                    
-                    <div class="space-y-8">
-                        <div>
-                            <h3 class="text-2xl font-semibold mb-4">Erat aliquam</h3>
-                            <p class="text-gray-700">
-                                Vehicula ultrices dolor amet ultricies et condimentum. Magna sed etiam consequat, 
-                                et lorem adipiscing sed dolor sit amet, consectetur amet do eiusmod tempor incididunt 
-                                ipsum suspendisse ultrices gravida.
-                            </p>
-                        </div>
-                        
-                        <div>
-                            <h3 class="text-2xl font-semibold mb-4">Nisl consequat</h3>
-                            <p class="text-gray-700">
-                                Aenean ornare velit lacus, ac varius enim ullamcorper eu. Proin aliquam sed facilisis 
-                                ante interdum congue. Integer mollis, nisl amet convallis, porttitor magna ullamcorper, 
-                                amet mauris. Ut magna finibus nisi nec lacinia ipsum maximus.
-                            </p>
-                        </div>
-                        
-                        <div>
-                            <h3 class="text-2xl font-semibold mb-4">Lorem gravida</h3>
-                            <p class="text-gray-700">
-                                Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aenean 
-                                ornare velit lacus, ac varius sed enim lorem ullamcorper dolore. ac varius enim 
-                                lorem ullamcorper dolore. Proin aliquam facilisis.
-                            </p>
-                        </div>
+            <div class="project-grid">
+                <div class="project-item">
+                    <div class="project-image">
+                        <img src="images/project1.jpg" alt="未来城市">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">未来城市</h3>
+                        <p class="project-description">一个探索未来城市规划与可持续发展的概念设计项目，融合了先进的技术与环保理念。</p>
+                        <a href="#" class="project-link">了解更多</a>
+                    </div>
+                </div>
+                <div class="project-item">
+                    <div class="project-image">
+                        <img src="images/project2.jpg" alt="数字艺术展览">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">数字艺术展览</h3>
+                        <p class="project-description">一个沉浸式数字艺术展览，通过互动装置和投影技术创造出令人惊叹的视觉体验。</p>
+                        <a href="#" class="project-link">了解更多</a>
+                    </div>
+                </div>
+                <div class="project-item">
+                    <div class="project-image">
+                        <img src="images/project3.jpg" alt="生态建筑">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">生态建筑</h3>
+                        <p class="project-description">结合自然元素与现代建筑的设计方案，打造出与环境和谐共生的生活空间。</p>
+                        <a href="#" class="project-link">了解更多</a>
+                    </div>
+                </div>
+                <div class="project-item">
+                    <div class="project-image">
+                        <img src="images/project4.jpg" alt="科技与人文">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">科技与人文</h3>
+                        <p class="project-description">一个探讨科技发展与人文关怀如何平衡的跨学科研究项目，提出了创新的解决方案。</p>
+                        <a href="#" class="project-link">了解更多</a>
+                    </div>
+                </div>
+                <div class="project-item">
+                    <div class="project-image">
+                        <img src="images/project5.jpg" alt="智能出行">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">智能出行</h3>
+                        <p class="project-description">为未来城市设计的智能出行系统，旨在提高交通效率，减少碳排放，提升用户体验。</p>
+                        <a href="#" class="project-link">了解更多</a>
+                    </div>
+                </div>
+                <div class="project-item">
+                    <div class="project-image">
+                        <img src="images/project6.jpg" alt="虚拟现实">
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">虚拟现实</h3>
+                        <p class="project-description">一个沉浸式虚拟现实体验项目，将用户带入一个全新的数字世界，探索无限可能。</p>
+                        <a href="#" class="project-link">了解更多</a>
                     </div>
                 </div>
             </div>
         </section>
-        
-        <!-- Contact Section -->
-        <section id="contact" class="py-24 bg-white section">
-            <div class="container mx-auto px-6">
-                <div class="max-w-3xl mx-auto text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-6">联系我们</h2>
-                    <p class="text-xl text-gray-600 mb-12">
-                        无论您有任何问题或合作意向，都欢迎随时与我们联系。我们将竭诚为您提供专业的服务和解决方案。
-                    </p>
-                    
-                    <form class="space-y-6 max-w-xl mx-auto">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1 text-left">姓名</label>
-                                <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
-                            </div>
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1 text-left">邮箱</label>
-                                <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1 text-left">主题</label>
-                            <input type="text" id="subject" name="subject" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
-                        </div>
-                        
-                        <div>
-                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1 text-left">留言</label>
-                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"></textarea>
-                        </div>
-                        
-                        <button type="submit" class="btn w-full">发送留言</button>
-                    </form>
-                </div>
+
+        <!-- 关于 -->
+        <section id="about" class="about">
+            <div class="about-content">
+                <h2>关于我们</h2>
+                <p>范式转换是一个由创意设计师、工程师和思想家组成的团队。我们相信，通过打破常规思维，我们可以创造出更有意义、更具影响力的作品。</p>
+                <p>我们的工作涵盖了数字设计、交互艺术、建筑概念和技术创新等多个领域。我们不断探索新的方法和技术，以应对当今世界的复杂挑战。</p>
+                <p>我们的使命是通过创新的设计和技术解决方案，为客户创造价值，并为社会带来积极的影响。</p>
             </div>
         </section>
-        
-        <!-- Footer -->
-        <footer class="grid-area: footer py-12 bg-gray-900 text-white">
-            <div class="container mx-auto px-6">
-                <div class="flex flex-col md:flex-row justify-between items-center">
-                    <div class="mb-6 md:mb-0">
-                        <h3 class="text-xl font-bold">Paradigm Shift</h3>
-                        <p class="text-gray-400 mt-2">© 2025 All rights reserved.</p>
+
+        <!-- 联系 -->
+        <section id="contact" class="contact">
+            <div class="contact-content">
+                <h2>联系我们</h2>
+                <p>无论您有任何问题、建议或合作意向，都欢迎随时与我们联系。我们期待与您一起开启新的创意之旅。</p>
+                <form class="contact-form">
+                    <div class="form-group">
+                        <label for="name">姓名</label>
+                        <input type="text" id="name" name="name" required>
                     </div>
-                    
-                    <div class="flex space-x-6">
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fa fa-weixin"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fa fa-play-circle"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fa fa-coffee"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                            <i class="fa fa-github"></i>
-                        </a>
+                    <div class="form-group">
+                        <label for="email">邮箱</label>
+                        <input type="email" id="email" name="email" required>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label for="message">留言</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">发送消息</button>
+                </form>
             </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>&copy; 2024 范式转换. 保留所有权利.</p>
         </footer>
     </div>
-    
-    <!-- Modal for image preview -->
-    <div class="modal" id="imageModal">
-        <span class="modal-close" id="closeModal">×</span>
+
+    <!-- 遮罩层 -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- 图片查看模态框 -->
+    <div class="modal" id="image-modal">
+        <button class="modal-close" id="modal-close">&times;</button>
         <div class="modal-content">
-            <img id="modalImage" src="" alt="Preview">
+            <img id="modal-image" src="" alt="预览图片">
         </div>
     </div>
-    
 
     <script>
-        // 项目数据
-        const galleryItems = [
-            { 
-                id: 1, 
-                title: '极简作品集', 
-                description: '简约风格的作品集设计，融合了清晰的排版和几何图形元素。',
-                image: 'images/project1.jpg',
-                link: '#'
-            },
-            { 
-                id: 2, 
-                title: '现代网格布局', 
-                description: '采用CSS Grid布局的现代网站，展示创意项目的最佳平台。',
-                image: 'images/project2.jpg',
-                link: '#'
-            },
-            { 
-                id: 3, 
-                title: '响应式设计', 
-                description: '单色配色方案的响应式设计，搭配优雅的排版和布局。',
-                image: 'images/project3.jpg',
-                link: '#'
-            },
-            { 
-                id: 4, 
-                title: '创意作品集模板', 
-                description: '包含交互元素和平滑动画效果的创意作品集模板。',
-                image: 'images/project4.jpg',
-                link: '#'
-            },
-            { 
-                id: 5, 
-                title: '极简网页设计', 
-                description: '以内容和用户体验为核心的极简主义网页设计。',
-                image: 'images/project5.jpg',
-                link: '#'
-            },
-            { 
-                id: 6, 
-                title: '创新网格布局', 
-                description: '基于网格的创新布局设计，搭配精致的悬停效果。',
-                image: 'images/project6.jpg',
-                link: '#'
-            }
-        ];
-        
-        // DOM Elements
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const openSidebarBtn = document.getElementById('openSidebar');
-        const closeSidebarBtn = document.getElementById('closeSidebar');
-        const galleryContainer = document.querySelector('.grid-gallery');
-        const imageModal = document.getElementById('imageModal');
-        const modalImage = document.getElementById('modalImage');
-        const closeModalBtn = document.getElementById('closeModal');
-        const sections = document.querySelectorAll('.section');
-        const navLinks = document.querySelectorAll('.nav-link');
-        const contactForm = document.querySelector('form');
-        
-        // Initialize the gallery
-        function initGallery() {
-            galleryItems.forEach(item => {
-                const galleryItem = document.createElement('div');
-                galleryItem.className = 'grid-gallery-item';
-                
-                // Create image container with skeleton
-                const imageContainer = document.createElement('div');
-                imageContainer.className = 'grid-gallery-item-image';
-                imageContainer.innerHTML = `
-                    <div class="skeleton"></div>
-                    <img src="${item.image}" alt="${item.title}" loading="lazy">
-                `;
-                
-                // Add image load event to remove skeleton
-                const img = imageContainer.querySelector('img');
-                img.addEventListener('load', () => {
-                    imageContainer.classList.add('image-loaded');
-                });
-                
-                // Handle image load error
-                img.addEventListener('error', () => {
-                    imageContainer.classList.add('image-loaded');
-                    img.style.filter = 'grayscale(100%)';
-                });
-                
-                // Create content container
-                const contentContainer = document.createElement('div');
-                contentContainer.className = 'grid-gallery-item-content';
-                contentContainer.innerHTML = `
-                    <h3 class="grid-gallery-item-title">${item.title}</h3>
-                    <p class="grid-gallery-item-description">${item.description}</p>
-                    <a href="${item.link}" class="btn grid-gallery-item-link">了解更多</a>
-                `;
-                
-                // Assemble the gallery item
-                galleryItem.appendChild(imageContainer);
-                galleryItem.appendChild(contentContainer);
-                
-                // Add click event for image modal
-                imageContainer.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent triggering the link
-                    openModal(item.image);
-                });
-                
-                // Ensure proper z-index stacking
-                const btnLink = contentContainer.querySelector('.btn');
-                btnLink.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent triggering the image click
-                });
-                
-                galleryContainer.appendChild(galleryItem);
+        // 等待DOM加载完成
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取DOM元素
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menu-toggle');
+            const overlay = document.getElementById('overlay');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const imageModal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            const modalClose = document.getElementById('modal-close');
+            const projectImages = document.querySelectorAll('.project-image img');
+            const contactForm = document.querySelector('.contact-form');
+
+            // 侧边栏切换
+            menuToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                overlay.classList.toggle('active');
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : 'auto';
             });
-        }
-        
-        // Initialize sidebar functionality
-        function initSidebar() {
-            openSidebarBtn.addEventListener('click', () => {
-                sidebar.classList.add('active');
-                overlay.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            });
-            
-            closeSidebarBtn.addEventListener('click', closeSidebar);
-            overlay.addEventListener('click', closeSidebar);
-            
-            function closeSidebar() {
+
+            overlay.addEventListener('click', function() {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }
-        
-        // Initialize modal functionality
-        function initModal() {
-            closeModalBtn.addEventListener('click', closeModal);
-            imageModal.addEventListener('click', (e) => {
-                if (e.target === imageModal) {
-                    closeModal();
-                }
+                document.body.style.overflow = 'auto';
             });
-            
-            function openModal(imageSrc) {
-                modalImage.src = imageSrc;
-                imageModal.classList.add('active');
-                document.body.style.overflow = 'hidden';
-            }
-            
-            function closeModal() {
-                imageModal.classList.remove('active');
-                document.body.style.overflow = '';
-            }
-        }
-        
-        // Initialize scroll animations
-        function initScrollAnimations() {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
-                    }
-                });
-            }, { threshold: 0.1 });
-            
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-        }
-        
-        // Initialize smooth scrolling for navigation links
-        function initSmoothScroll() {
+
+            // 导航链接点击事件
             navLinks.forEach(link => {
-                link.addEventListener('click', (e) => {
+                link.addEventListener('click', function(e) {
                     e.preventDefault();
                     
-                    const targetId = link.getAttribute('href');
+                    // 在移动端点击链接后关闭侧边栏
+                    if (window.innerWidth < 768) {
+                        sidebar.classList.remove('active');
+                        overlay.classList.remove('active');
+                        document.body.style.overflow = 'auto';
+                    }
+
+                    // 平滑滚动到目标部分
+                    const targetId = this.getAttribute('href');
                     const targetElement = document.querySelector(targetId);
                     
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                        
-                        // Close sidebar if open (mobile)
-                        if (window.innerWidth < 768) {
-                            sidebar.classList.remove('active');
-                            overlay.classList.remove('active');
-                            document.body.style.overflow = '';
-                        }
-                    }
+                    window.scrollTo({
+                        top: targetElement.offsetTop,
+                        behavior: 'smooth'
+                    });
+
+                    // 更新活动链接
+                    navLinks.forEach(navLink => navLink.classList.remove('active'));
+                    this.classList.add('active');
                 });
             });
-        }
-        
-        // Initialize form submission
-        function initFormSubmission() {
-            contactForm.addEventListener('submit', (e) => {
+
+            // 图片查看功能
+            projectImages.forEach(image => {
+                image.addEventListener('click', function() {
+                    modalImage.src = this.src;
+                    imageModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+
+            modalClose.addEventListener('click', function() {
+                imageModal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            });
+
+            imageModal.addEventListener('click', function(e) {
+                if (e.target === imageModal) {
+                    imageModal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // 表单提交
+            contactForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                // Get form data
+                // 获取表单数据
                 const name = document.getElementById('name').value;
                 const email = document.getElementById('email').value;
-                const subject = document.getElementById('subject').value;
                 const message = document.getElementById('message').value;
-                
-                // 验证表单
-                if (!name || !email || !subject || !message) {
-                    alert('请填写所有字段');
-                    return;
-                }
                 
                 // 模拟表单提交
                 alert(`感谢您的留言，${name}！我们会尽快回复您。`);
                 contactForm.reset();
             });
-        }
-        
-        // Initialize everything when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            initGallery();
-            initSidebar();
-            initModal();
-            initScrollAnimations();
-            initSmoothScroll();
-            initFormSubmission();
-            
-            // Add animation to hero section
-            gsap.from('#home h1', { opacity: 0, y: 50, duration: 1, delay: 0.2 });
-            gsap.from('#home p', { opacity: 0, y: 30, duration: 1, delay: 0.4 });
-            gsap.from('#home .btn', { opacity: 0, y: 20, duration: 1, delay: 0.6 });
+
+            // 滚动监听，更新活动链接
+            window.addEventListener('scroll', function() {
+                const scrollPosition = window.scrollY + 100;
+
+                navLinks.forEach(link => {
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (
+                        targetElement.offsetTop <= scrollPosition &&
+                        targetElement.offsetTop + targetElement.offsetHeight > scrollPosition
+                    ) {
+                        navLinks.forEach(navLink => navLink.classList.remove('active'));
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // 触发一次滚动事件，以正确设置初始状态
+            window.dispatchEvent(new Event('scroll'));
         });
     </script>
-
-</body></html>
+</body>
+</html>
