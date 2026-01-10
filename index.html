@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Paradigm Shift</title>
+    <title>范式转换</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -11,35 +11,7 @@
     <!-- GSAP for animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#222222',
-                        secondary: '#888888',
-                        accent: '#000000',
-                        light: '#f5f5f5',
-                        dark: '#111111'
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'Helvetica', 'Arial', 'sans-serif'],
-                        mono: ['Consolas', 'Monaco', 'monospace']
-                    },
-                    spacing: {
-                        '128': '32rem',
-                        '144': '36rem',
-                    },
-                    zIndex: {
-                        '60': '60',
-                        '70': '70',
-                        '80': '80',
-                        '90': '90',
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Tailwind config moved to CSS for better compatibility -->
 
     <style>
         /* Prevent overflow on mobile devices */
@@ -116,9 +88,19 @@
             width: 280px;
             height: 100vh;
             background-color: #ffffff;
+            -webkit-transform: translateX(-100%);
+            -moz-transform: translateX(-100%);
+            -ms-transform: translateX(-100%);
+            -o-transform: translateX(-100%);
             transform: translateX(-100%);
+            -webkit-transition: transform 0.3s ease-in-out;
+            -moz-transition: transform 0.3s ease-in-out;
+            -ms-transition: transform 0.3s ease-in-out;
+            -o-transition: transform 0.3s ease-in-out;
             transition: transform 0.3s ease-in-out;
             z-index: 100;
+            -webkit-box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            -moz-box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
         }
@@ -135,6 +117,10 @@
         }
         
         .sidebar.active {
+            -webkit-transform: translateX(0);
+            -moz-transform: translateX(0);
+            -ms-transform: translateX(0);
+            -o-transform: translateX(0);
             transform: translateX(0);
         }
         
@@ -145,13 +131,19 @@
             width: 100vw;
             height: 100vh;
             background-color: rgba(0, 0, 0, 0.5);
+            filter: alpha(opacity=0);
             opacity: 0;
             visibility: hidden;
+            -webkit-transition: opacity 0.3s ease, visibility 0.3s ease;
+            -moz-transition: opacity 0.3s ease, visibility 0.3s ease;
+            -ms-transition: opacity 0.3s ease, visibility 0.3s ease;
+            -o-transition: opacity 0.3s ease, visibility 0.3s ease;
             transition: opacity 0.3s ease, visibility 0.3s ease;
             z-index: 90;
         }
         
         .overlay.active {
+            filter: alpha(opacity=100);
             opacity: 1;
             visibility: visible;
         }
@@ -183,6 +175,10 @@
         }
         
         .grid-gallery-item:hover {
+            -webkit-transform: translateY(-5px);
+            -moz-transform: translateY(-5px);
+            -ms-transform: translateY(-5px);
+            -o-transform: translateY(-5px);
             transform: translateY(-5px);
         }
         
@@ -200,12 +196,22 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            -webkit-transition: transform 0.5s ease, filter 0.5s ease;
+            -moz-transition: transform 0.5s ease, filter 0.5s ease;
+            -ms-transition: transform 0.5s ease, filter 0.5s ease;
+            -o-transition: transform 0.5s ease, filter 0.5s ease;
             transition: transform 0.5s ease, filter 0.5s ease;
             z-index: 1;
+            -webkit-filter: grayscale(100%);
+            -moz-filter: grayscale(100%);
+            -ms-filter: grayscale(100%);
             filter: grayscale(100%);
         }
         
         .grid-gallery-item:hover .grid-gallery-item-image img {
+            -webkit-filter: grayscale(0%);
+            -moz-filter: grayscale(0%);
+            -ms-filter: grayscale(0%);
             filter: grayscale(0%);
         }
         
@@ -216,12 +222,46 @@
             left: 0;
             width: 100%;
             height: 100%;
+            background: #f0f0f0; /* Fallback color */
+            background: -webkit-linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: -moz-linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: -o-linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
+            -webkit-animation: skeleton-loading 1.5s infinite;
+            -moz-animation: skeleton-loading 1.5s infinite;
+            -o-animation: skeleton-loading 1.5s infinite;
             animation: skeleton-loading 1.5s infinite;
             z-index: 0;
         }
         
+        @-webkit-keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        @-moz-keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        @-o-keyframes skeleton-loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
         @keyframes skeleton-loading {
             0% {
                 background-position: 200% 0;
@@ -236,6 +276,10 @@
         }
         
         .grid-gallery-item:hover .grid-gallery-item-image img {
+            -webkit-transform: scale(1.05);
+            -moz-transform: scale(1.05);
+            -ms-transform: scale(1.05);
+            -o-transform: scale(1.05);
             transform: scale(1.05);
         }
         
@@ -328,6 +372,10 @@
             width: 0;
             height: 2px;
             background-color: #000000;
+            -webkit-transition: width 0.3s ease;
+            -moz-transition: width 0.3s ease;
+            -ms-transition: width 0.3s ease;
+            -o-transition: width 0.3s ease;
             transition: width 0.3s ease;
         }
         
@@ -357,6 +405,10 @@
             width: 100%;
             height: 100%;
             background-color: #333333;
+            -webkit-transition: left 0.3s ease;
+            -moz-transition: left 0.3s ease;
+            -ms-transition: left 0.3s ease;
+            -o-transition: left 0.3s ease;
             transition: left 0.3s ease;
             z-index: -1;
         }
@@ -370,13 +422,27 @@
         }
         
         .section {
+            filter: alpha(opacity=0);
             opacity: 0;
+            -webkit-transform: translateY(20px);
+            -moz-transform: translateY(20px);
+            -ms-transform: translateY(20px);
+            -o-transform: translateY(20px);
             transform: translateY(20px);
+            -webkit-transition: opacity 0.6s ease, transform 0.6s ease;
+            -moz-transition: opacity 0.6s ease, transform 0.6s ease;
+            -ms-transition: opacity 0.6s ease, transform 0.6s ease;
+            -o-transition: opacity 0.6s ease, transform 0.6s ease;
             transition: opacity 0.6s ease, transform 0.6s ease;
         }
         
         .section.visible {
+            filter: alpha(opacity=100);
             opacity: 1;
+            -webkit-transform: translateY(0);
+            -moz-transform: translateY(0);
+            -ms-transform: translateY(0);
+            -o-transform: translateY(0);
             transform: translateY(0);
         }
         
@@ -449,17 +515,17 @@
     <aside class="sidebar p-6 flex flex-col justify-between" id="sidebar">
         <div>
             <div class="flex items-center justify-between mb-12">
-                <h1 class="text-2xl font-bold">Paradigm Shift</h1>
+                <h1 class="text-2xl font-bold">范式转换</h1>
                 <button class="menu-toggle md:hidden text-2xl" id="closeSidebar">
                     <i class="fa fa-times"></i>
                 </button>
             </div>
             
             <nav class="space-y-6">
-                <a href="#home" class="nav-link block text-lg font-medium">Home</a>
-                <a href="#work" class="nav-link block text-lg font-medium">Work</a>
-                <a href="#about" class="nav-link block text-lg font-medium">About</a>
-                <a href="#contact" class="nav-link block text-lg font-medium">Contact</a>
+                <a href="#home" class="nav-link block text-lg font-medium">首页</a>
+                <a href="#work" class="nav-link block text-lg font-medium">作品</a>
+                <a href="#about" class="nav-link block text-lg font-medium">关于</a>
+                <a href="#contact" class="nav-link block text-lg font-medium">联系</a>
             </nav>
         </div>
         
@@ -503,12 +569,12 @@
             <div class="dynamic-bg"></div>
             <div class="container mx-auto px-6">
                 <div class="max-w-3xl mx-auto text-center">
-                    <h1 class="text-4xl md:text-6xl font-bold mb-6" style="color: rgb(250, 250, 250);">Magna sed nullam nisl adipiscing</h1>
+                    <h1 class="text-4xl md:text-6xl font-bold mb-6" style="color: rgb(250, 250, 250);">探索无限可能</h1>
                     <p class="text-xl text-gray-600 mb-12" style="color: rgb(245, 246, 252);">
-                        Lorem ipsum dolor sit amet consectetur adipiscing elit. Duis dapibus rutrum facilisis. 
-                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+                        欢迎来到我的创意世界，这里展示了我对设计和技术的热爱与探索。
+                        每一个项目都是一次独特的旅程，融合了创新思维与精湛工艺。
                     </p>
-                    <a href="#work" class="btn">View My Work</a>
+                    <a href="#work" class="btn">查看作品</a>
                 </div>
             </div>
         </section>
@@ -516,7 +582,7 @@
         <!-- Work Section -->
         <section id="work" class="py-24 bg-white section">
             <div class="container mx-auto px-6">
-                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">Feugiat consequat tempus ultrices</h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-12 text-center">创意作品展示</h2>
                 
                 <div class="grid-gallery">
                     <!-- Gallery items will be dynamically generated -->
@@ -566,35 +632,34 @@
         <section id="contact" class="py-24 bg-white section">
             <div class="container mx-auto px-6">
                 <div class="max-w-3xl mx-auto text-center">
-                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Duis sed adpiscing veroeros amet</h2>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">联系我们</h2>
                     <p class="text-xl text-gray-600 mb-12">
-                        Proin tempus feugiat sed varius enim lorem ullamcorper dolore aliquam aenean ornare 
-                        velit lacus, ac varius enim lorem ullamcorper dolore.
+                        无论您有任何问题或合作意向，都欢迎随时与我们联系。我们将竭诚为您提供专业的服务和解决方案。
                     </p>
                     
                     <form class="space-y-6 max-w-xl mx-auto">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1 text-left">Name</label>
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1 text-left">姓名</label>
                                 <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
                             </div>
                             <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1 text-left">Email</label>
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1 text-left">邮箱</label>
                                 <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
                             </div>
                         </div>
                         
                         <div>
-                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1 text-left">Subject</label>
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-1 text-left">主题</label>
                             <input type="text" id="subject" name="subject" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black">
                         </div>
                         
                         <div>
-                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1 text-left">Message</label>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-1 text-left">留言</label>
                             <textarea id="message" name="message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"></textarea>
                         </div>
                         
-                        <button type="submit" class="btn w-full">Send Message</button>
+                        <button type="submit" class="btn w-full">发送留言</button>
                     </form>
                 </div>
             </div>
@@ -638,47 +703,47 @@
     
 
     <script>
-        // Sample gallery data
+        // 项目数据
         const galleryItems = [
             { 
                 id: 1, 
-                title: 'Project 1', 
-                description: 'A minimalist portfolio design with clean typography and geometric shapes.',
+                title: '极简作品集', 
+                description: '简约风格的作品集设计，融合了清晰的排版和几何图形元素。',
                 image: 'images/project1.jpg',
                 link: '#'
             },
             { 
                 id: 2, 
-                title: 'Project 2', 
-                description: 'Modern website with CSS Grid layout showcasing creative projects.',
+                title: '现代网格布局', 
+                description: '采用CSS Grid布局的现代网站，展示创意项目的最佳平台。',
                 image: 'images/project2.jpg',
                 link: '#'
             },
             { 
                 id: 3, 
-                title: 'Project 3', 
-                description: 'Responsive design with monochromatic color scheme and elegant typography.',
+                title: '响应式设计', 
+                description: '单色配色方案的响应式设计，搭配优雅的排版和布局。',
                 image: 'images/project3.jpg',
                 link: '#'
             },
             { 
                 id: 4, 
-                title: 'Project 4', 
-                description: 'Creative portfolio template with interactive elements and smooth animations.',
+                title: '创意作品集模板', 
+                description: '包含交互元素和平滑动画效果的创意作品集模板。',
                 image: 'images/project4.jpg',
                 link: '#'
             },
             { 
                 id: 5, 
-                title: 'Project 5', 
-                description: 'Minimalist web design with focus on content and user experience.',
+                title: '极简网页设计', 
+                description: '以内容和用户体验为核心的极简主义网页设计。',
                 image: 'images/project5.jpg',
                 link: '#'
             },
             { 
                 id: 6, 
-                title: 'Project 6', 
-                description: 'Innovative layout with grid-based design and subtle hover effects.',
+                title: '创新网格布局', 
+                description: '基于网格的创新布局设计，搭配精致的悬停效果。',
                 image: 'images/project6.jpg',
                 link: '#'
             }
@@ -729,7 +794,7 @@
                 contentContainer.innerHTML = `
                     <h3 class="grid-gallery-item-title">${item.title}</h3>
                     <p class="grid-gallery-item-description">${item.description}</p>
-                    <a href="${item.link}" class="btn grid-gallery-item-link">Learn More</a>
+                    <a href="${item.link}" class="btn grid-gallery-item-link">了解更多</a>
                 `;
                 
                 // Assemble the gallery item
@@ -843,14 +908,14 @@
                 const subject = document.getElementById('subject').value;
                 const message = document.getElementById('message').value;
                 
-                // Validate form
+                // 验证表单
                 if (!name || !email || !subject || !message) {
-                    alert('Please fill in all fields');
+                    alert('请填写所有字段');
                     return;
                 }
                 
-                // Simulate form submission
-                alert(`Thank you for your message, ${name}! We'll get back to you soon.`);
+                // 模拟表单提交
+                alert(`感谢您的留言，${name}！我们会尽快回复您。`);
                 contactForm.reset();
             });
         }
