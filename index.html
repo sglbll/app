@@ -9,16 +9,6 @@
     <title>𝑆𝑔𝑙𝑏𝑙 的网页仓库</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
-        const element = document.getElementById('my-element');
-            if (element.requestFullscreen) {
-                element.requestFullscreen();
-            } else if (element.mozRequestFullScreen) { // Firefox
-                element.mozRequestFullScreen();
-            } else if (element.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                element.webkitRequestFullscreen();
-            } else if (element.msRequestFullscreen) { // Internet Explorer and Edge
-                element.msRequestFullscreen();
-            }
         /* 基础样式 */
         * {
             margin: 0;
@@ -161,7 +151,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background: linear-gradient(-45deg, #56c448, #47c56d, #2cc7ba, #237fd5);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             z-index: -1;
@@ -323,7 +313,7 @@
         }
 
         .project-link:hover {
-            background: rgba(106, 166, 102, 0.9);
+            background: #6aa666e6;
             transform: translateY(-2px);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
@@ -369,7 +359,7 @@
         /* 联系部分 */
         .contact {
             padding: 4rem 2rem;
-            background: white;
+            background: rgb(255, 255, 255);
         }
 
         .contact-content {
@@ -404,7 +394,7 @@
         .form-group input,
         .form-group textarea {
             padding: 0.75rem;
-            border: 1px solid #ddd;
+            border: 1px solid hsl(0, 0%, 87%);
             border-radius: 4px;
             font-size: 1rem;
         }
@@ -423,7 +413,7 @@
         /* 页脚 */
         .footer {
             padding: 2rem;
-            background: #000;
+            background: #4c744a;
             color: white;
             text-align: center;
         }
@@ -655,8 +645,8 @@
         <!-- 关于 -->
         <section id="about" class="about">
             <div class="about-content">
-                <h2>关于我们</h2>
-                <p>范式转换是一个由创意设计师、工程师和思想家组成的团队。我们相信，通过打破常规思维，我们可以创造出更有意义、更具影响力的作品。</p>
+                <h2>关于我</h2>
+                <p>𝑆𝑔𝑙𝑏𝑙 的网页仓库 是一个由创意设计师、工程师和思想家组成的团队。我相信，通过打破常规思维，我们可以创造出更有意义、更具影响力的作品。</p>
                 <p>我们的工作涵盖了数字设计、交互艺术、建筑概念和技术创新等多个领域。我们不断探索新的方法和技术，以应对当今世界的复杂挑战。</p>
                 <p>我们的使命是通过创新的设计和技术解决方案，为客户创造价值，并为社会带来积极的影响。</p>
             </div>
@@ -666,7 +656,7 @@
         <section id="contact" class="contact">
             <div class="contact-content">
                 <h2>联系我们</h2>
-                <p>无论您有任何问题、建议或合作意向，都欢迎随时与我们联系。我们期待与您一起开启新的创意之旅。</p>
+                <p>无论您有任何问题、建议或合作意向，都欢迎随时与我联系。我期待与您一起开启新的创意之旅。</p>
                 <form class="contact-form">
                     <div class="form-group">
                         <label for="name">姓名</label>
