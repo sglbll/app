@@ -9,6 +9,16 @@
     <title>𝑆𝑔𝑙𝑏𝑙 的网页仓库</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
+        const element = document.getElementById('my-element');
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) { // Firefox
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) { // Internet Explorer and Edge
+                element.msRequestFullscreen();
+            }
         /* 基础样式 */
         * {
             margin: 0;
